@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Admin Dashboard</title>
+     <style>
+          * {
+               margin: 0;
+               padding: 0;
+               box-sizing: border-box;
+          }
+
+          body {
+               font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+               background: #f8f9fa;
+               min-height: 100vh;
+          }
+
+          .dashboard-container {
+               display: grid;
+               grid-template-columns: 250px 1fr;
+               min-height: 100vh;
+          }
+
+          .sidebar {
+               background: #2c2c2c;
+               border-right: 1px solid #e0e0e0;
+               padding: 20px;
+          }
+
+          .logo {
+               color: white;
+               font-size: 24px;
+               font-weight: bold;
+               margin-bottom: 30px;
+               text-align: center;
+          }
+
+          .nav-menu {
+               list-style: none;
+          }
+
+          .nav-item {
+               margin-bottom: 10px;
+          }
+
+          .nav-link {
+               display: flex;
+               align-items: center;
+               padding: 12px 16px;
+               color: rgba(255, 255, 255, 0.9);
+               text-decoration: none;
+               border-radius: 8px;
+               transition: all 0.3s ease;
+          }
+
+          .nav-link:hover,
+          .nav-link.active {
+               background: #3c3c3c;
+               color: white;
+               transform: translateX(5px);
+          }
+
+          .nav-icon {
+               margin-right: 10px;
+               width: 20px;
+               height: 20px;
+          }
+
+          .main-content {
+               padding: 30px;
+               overflow-y: auto;
+          }
+
+          .header {
+               display: flex;
+               justify-content: space-between;
+               align-items: center;
+               margin-bottom: 30px;
+               background: white;
+               padding: 20px;
+               border-radius: 12px;
+               border: 1px solid #e0e0e0;
+               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          .header h1 {
+               color: #2c2c2c;
+               font-size: 28px;
+          }
+
+          .user-info {
+               display: flex;
+               align-items: center;
+               color: #2c2c2c;
+          }
+
+          .avatar {
+               width: 40px;
+               height: 40px;
+               border-radius: 50%;
+               background: #6c757d;
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               margin-left: 10px;
+               font-weight: bold;
+               color: white;
+          }
+
+          .cards-grid {
+               display: grid;
+               grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+               gap: 25px;
+               margin-bottom: 30px;
+          }
+
+          .card {
+               background: rgba(0, 0, 0, 0.3);
+               backdrop-filter: blur(10px);
+               border: 1px solid rgba(255, 255, 255, 0.1);
+               border-radius: 16px;
+               padding: 25px;
+               transition: all 0.3s ease;
+          }
+
+          .card:hover {
+               transform: translateY(-5px);
+               box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+          }
+
+          .card-header {
+               display: flex;
+               align-items: center;
+               margin-bottom: 20px;
+          }
+
+          .card-icon {
+               width: 50px;
+               height: 50px;
+               border-radius: 12px;
+               display: flex;
+               align-items: center;
+               justify-content: center;
+               margin-right: 15px;
+               font-size: 24px;
+          }
+
+          .card-title {
+               color: white;
+               font-size: 18px;
+               font-weight: 600;
+          }
+
+          .card-content {
+               color: rgba(255, 255, 255, 0.9);
+          }
+
+          .btn {
+               background: #6c757d;
+               color: white;
+               border: none;
+               padding: 10px 20px;
+               border-radius: 8px;
+               cursor: pointer;
+               font-weight: 500;
+               transition: all 0.3s ease;
+               margin: 5px;
+          }
+
+          .btn:hover {
+               transform: translateY(-2px);
+               box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+               background: #5a6268;
+          }
+
+          .btn-danger {
+               background: #495057;
+          }
+
+          .btn-danger:hover {
+               background: #343a40;
+          }
+
+          .btn-success {
+               background: #2c2c2c;
+          }
+
+          .btn-success:hover {
+               background: #1a1a1a;
+          }
+
+          .status-badge {
+               padding: 4px 12px;
+               border-radius: 20px;
+               font-size: 12px;
+               font-weight: 500;
+               margin-left: 10px;
+          }
+
+          .status-testing {
+               background: #f8f9fa;
+               color: #6c757d;
+               border: 1px solid #e0e0e0;
+          }
+
+          .status-not-started {
+               background: #f8f9fa;
+               color: #adb5bd;
+               border: 1px solid #dee2e6;
+          }
+
+          .data-table {
+               background: white;
+               border-radius: 12px;
+               overflow: hidden;
+               border: 1px solid #e0e0e0;
+               box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+
+          .table {
+               width: 100%;
+               border-collapse: collapse;
+               color: #2c2c2c;
+          }
+
+          .table th,
+          .table td {
+               padding: 15px;
+               text-align: left;
+               border-bottom: 1px solid #e0e0e0;
+          }
+
+          .table th {
+               background: #f8f9fa;
+               font-weight: 600;
+               color: #495057;
+          }
+
+          .modal {
+               display: none;
+               position: fixed;
+               top: 0;
+               left: 0;
+               width: 100%;
+               height: 100%;
+               background: rgba(0, 0, 0, 0.5);
+               backdrop-filter: blur(5px);
+               z-index: 1000;
+          }
+
+          .modal-content {
+               position: absolute;
+               top: 50%;
+               left: 50%;
+               transform: translate(-50%, -50%);
+               background: white;
+               border: 1px solid #e0e0e0;
+               border-radius: 16px;
+               padding: 30px;
+               min-width: 400px;
+               color: #2c2c2c;
+               box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+          }
+
+          .form-group {
+               margin-bottom: 20px;
+          }
+
+          .form-label {
+               display: block;
+               margin-bottom: 5px;
+               font-weight: 500;
+          }
+
+          .form-control {
+               width: 100%;
+               padding: 10px;
+               border: 1px solid #e0e0e0;
+               border-radius: 8px;
+               background: white;
+               color: #2c2c2c;
+          }
+
+          .form-control::placeholder {
+               color: #6c757d;
+          }
+
+          .close {
+               position: absolute;
+               top: 15px;
+               right: 20px;
+               font-size: 24px;
+               cursor: pointer;
+               color: #6c757d;
+          }
+
+          .close:hover {
+               color: #2c2c2c;
+          }
+     </style>
+</head>
+
+<body>
+     <div class="dashboard-container">
+          <aside class="sidebar">
+               <div class="logo">🚗 RouteAdmin</div>
+               <nav>
+                    <ul class="nav-menu">
+                         <li class="nav-item">
+                              <a href="#dashboard" class="nav-link active">
+                                   <span class="nav-icon">📊</span>
+                                   Dashboard
+                              </a>
+                         </li>
+                         <li class="nav-item">
+                              <a href="#users" class="nav-link">
+                                   <span class="nav-icon">👥</span>
+                                   User Management
+                              </a>
+                         </li>
+                         <li class="nav-item">
+                              <a href="#admins" class="nav-link">
+                                   <span class="nav-icon">👨‍💼</span>
+                                   Admin Management
+                              </a>
+                         </li>
+                         <li class="nav-item">
+                              <a href="#logs" class="nav-link">
+                                   <span class="nav-icon">📋</span>
+                                   Activity Logs
+                              </a>
+                         </li>
+                         <li class="nav-item">
+                              <a href="#reports" class="nav-link">
+                                   <span class="nav-icon">📈</span>
+                                   Reports & Feedback
+                              </a>
+                         </li>
+                         <li class="nav-item">
+                              <a href="#settings" class="nav-link">
+                                   <span class="nav-icon">⚙️</span>
+                                   System Settings
+                              </a>
+                         </li>
+                         <li class="nav-item">
+                              <a href="#2fa" class="nav-link">
+                                   <span class="nav-icon">🔐</span>
+                                   Two Factor Auth
+                              </a>
+                         </li>
+                    </ul>
+               </nav>
+          </aside>
+
+          <main class="main-content">
+               <header class="header">
+                    <h1>Admin Dashboard</h1>
+                    <div class="user-info">
+                         <span>Welcome, Admin</span>
+                         <div class="avatar">A</div>
+                    </div>
+               </header>
+
+               <div class="cards-grid">
+                    <div class="card">
+                         <div class="card-header">
+                              <div class="card-icon" style="background: #6c757d;">👥</div>
+                              <div class="card-title">User Management
+                                   <span class="status-badge status-not-started">Not Started</span>
+                              </div>
+                         </div>
+                         <div class="card-content">
+                              <p>Manage user accounts, permissions, and access controls.</p>
+                              <button class="btn" onclick="showUserManagement()">Manage Users</button>
+                              <button class="btn btn-success" onclick="addUser()">Add New User</button>
+                         </div>
+                    </div>
+
+                    <div class="card">
+                         <div class="card-header">
+                              <div class="card-icon" style="background: #495057;">👨‍💼</div>
+                              <div class="card-title">Admin Management
+                                   <span class="status-badge status-not-started">Not Started</span>
+                              </div>
+                         </div>
+                         <div class="card-content">
+                              <p>Control admin privileges and manage administrative access.</p>
+                              <button class="btn" onclick="showAdminManagement()">Manage Admins</button>
+                              <button class="btn btn-success" onclick="addAdmin()">Add Admin</button>
+                         </div>
+                    </div>
+
+                    <div class="card">
+                         <div class="card-header">
+                              <div class="card-icon" style="background: #343a40;">🔐</div>
+                              <div class="card-title">Two Factor Authentication
+                                   <span class="status-badge status-not-started">Not Started</span>
+                              </div>
+                         </div>
+                         <div class="card-content">
+                              <p>Configure and manage 2FA settings for enhanced security.</p>
+                              <button class="btn" onclick="show2FA()">Configure 2FA</button>
+                              <button class="btn btn-danger" onclick="disable2FA()">Disable 2FA</button>
+                         </div>
+                    </div>
+
+                    <div class="card">
+                         <div class="card-header">
+                              <div class="card-icon" style="background: #adb5bd;">📋</div>
+                              <div class="card-title">Activity Logs & Alerts
+                                   <span class="status-badge status-not-started">Not Started</span>
+                              </div>
+                         </div>
+                         <div class="card-content">
+                              <p>Monitor system activity and manage alert notifications.</p>
+                              <button class="btn" onclick="showLogs()">View Logs</button>
+                              <button class="btn" onclick="configureAlerts()">Configure Alerts</button>
+                         </div>
+                    </div>
+
+                    <div class="card">
+                         <div class="card-header">
+                              <div class="card-icon" style="background: #868e96;">📈</div>
+                              <div class="card-title">Reports & Feedback
+                                   <span class="status-badge status-not-started">Not Started</span>
+                              </div>
+                         </div>
+                         <div class="card-content">
+                              <p>Review user feedback and generate system reports.</p>
+                              <button class="btn" onclick="showReports()">View Reports</button>
+                              <button class="btn" onclick="exportData()">Export Data</button>
+                         </div>
+                    </div>
+
+                    <div class="card">
+                         <div class="card-header">
+                              <div class="card-icon" style="background: #2c2c2c;">⚙️</div>
+                              <div class="card-title">System Settings
+                                   <span class="status-badge status-not-started">Not Started</span>
+                              </div>
+                         </div>
+                         <div class="card-content">
+                              <p>Configure system-wide settings and preferences.</p>
+                              <button class="btn" onclick="showSettings()">System Config</button>
+                              <button class="btn btn-danger" onclick="backupSystem()">Backup System</button>
+                         </div>
+                    </div>
+               </div>
+
+               <div class="data-table" id="adminDashboardUI" style="display: block;">
+                    <div style="padding: 20px; color: white;">
+                         <h3 style="margin-bottom: 20px;">Admin Dashboard UI
+                              <span class="status-badge status-testing">Testing</span>
+                         </h3>
+                         <p style="margin-bottom: 15px;">Current dashboard interface providing overview of all admin
+                              functions and system status.</p>
+                         <div style="display: flex; gap: 10px;">
+                              <button class="btn">Refresh Dashboard</button>
+                              <button class="btn">Customize Layout</button>
+                              <button class="btn btn-success">Go Live</button>
+                         </div>
+                    </div>
+               </div>
+          </main>
+     </div>
+
+     <!-- Modals -->
+     <div id="userModal" class="modal">
+          <div class="modal-content">
+               <span class="close" onclick="closeModal('userModal')">&times;</span>
+               <h3>User Management</h3>
+               <div class="form-group">
+                    <label class="form-label">Search Users</label>
+                    <input type="text" class="form-control" placeholder="Search by name, email, or ID">
+               </div>
+               <table class="table">
+                    <thead>
+                         <tr>
+                              <th>User ID</th>
+                              <th>Name</th>
+                              <th>Email</th>
+                              <th>Status</th>
+                              <th>Actions</th>
+                         </tr>
+                    </thead>
+                    <tbody>
+                         <tr>
+                              <td>001</td>
+                              <td>John Doe</td>
+                              <td>john@example.com</td>
+                              <td>Active</td>
+                              <td>
+                                   <button class="btn" style="padding: 5px 10px; margin: 2px;">Edit</button>
+                                   <button class="btn btn-danger"
+                                        style="padding: 5px 10px; margin: 2px;">Suspend</button>
+                              </td>
+                         </tr>
+                    </tbody>
+               </table>
+          </div>
+     </div>
+
+     <script>
+          function showUserManagement() {
+               document.getElementById('userModal').style.display = 'block';
+          }
+
+          function showAdminManagement() {
+               alert('Admin Management interface would open here');
+          }
+
+          function show2FA() {
+               alert('Two Factor Authentication configuration would open here');
+          }
+
+          function showLogs() {
+               alert('Activity Logs interface would open here');
+          }
+
+          function showReports() {
+               alert('Reports & Feedback interface would open here');
+          }
+
+          function showSettings() {
+               alert('System Settings interface would open here');
+          }
+
+          function addUser() {
+               alert('Add New User form would open here');
+          }
+
+          function addAdmin() {
+               alert('Add New Admin form would open here');
+          }
+
+          function disable2FA() {
+               if (confirm('Are you sure you want to disable Two Factor Authentication?')) {
+                    alert('2FA disabled');
+               }
+          }
+
+          function configureAlerts() {
+               alert('Alert Configuration would open here');
+          }
+
+          function exportData() {
+               alert('Data export would begin here');
+          }
+
+          function backupSystem() {
+               if (confirm('Are you sure you want to backup the system?')) {
+                    alert('System backup initiated');
+               }
+          }
+
+          function closeModal(modalId) {
+               document.getElementById(modalId).style.display = 'none';
+          }
+
+          // Navigation handling
+          document.querySelectorAll('.nav-link').forEach(link => {
+               link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+               });
+          });
+
+          // Close modal when clicking outside
+          window.onclick = function (event) {
+               if (event.target.classList.contains('modal')) {
+                    event.target.style.display = 'none';
+               }
+          }
+     </script>
+</body>
+
+</html>
